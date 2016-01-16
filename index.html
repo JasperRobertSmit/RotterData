@@ -26,6 +26,14 @@ function initMap() {
 
   var trafficLayer = new google.maps.TrafficLayer();
   trafficLayer.setMap(map);
+
+    var layer = new google.maps.FusionTablesLayer({
+    query: {
+      select: '',
+      from: '1iY4H7gZoh8CUXrA5WVVQ4xIA-lmay0svaiYs7Ac',
+    }
+  });
+  layer.setMap(map);
 }
 
     </script>
