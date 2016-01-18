@@ -12,33 +12,144 @@
       }
       #map {
         height: 100%;
+        position:relative;
+      }
+
+      .options{
+        position:absolute;
+        height:100%;
+        width:200px;
+        background-color:#81AAF5;
+        left:0;
+        top:0;
+        z-index:100;
+        padding-left:5px;
+      }
+
+      input[type="checkbox"]{
+        width:30px;
+        height:30px;
+        display:inline-block;
+      }
+
+      label{
+        min-width:150px;
+        display:inline-block;
+        font-size:17px;
+      }
+
+      .tpbg{
+        position:absolute;
+        height:100%;
+        width:100%;
+        background-color:#fff;
+        opacity:0.8;
       }
     </style>
   </head>
   <body>
-    <div id="map"></div>
-    <script>
-function initMap() {
-  var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 13,
-    center: {lat: 51.91643, lng: 4.46749}
-  });
+    <div class="options">
+      <h2>Filters</h2>
+      <label>Scootmobiel: </label>
+      <input type="checkbox" checked="checked" name="vervoer" id="scootmobiel" value="Scootmobiel">
+      <br>
+      <label>Bestelauto: </label>
+      <input type="checkbox" checked="checked" name="vervoer" id="bestelauto" value="Bestelauto">
+      <br>
+      <label>Bromfiets: </label>
+      <input type="checkbox" checked="checked" name="vervoer" id="bromfiets" value="Bromfiets">
+      <br>
+      <label>Brommobiel: </label>
+      <input type="checkbox" checked="checked" name="vervoer" id="brommobiel" value="Brommobiel">
+      <br>
+      <label>Fiets: </label>
+      <input type="checkbox" checked="checked" name="vervoer" id="fiets" value="Fiets">
+      <br>
+      <label>Motor: </label>
+      <input type="checkbox" checked="checked" name="vervoer" id="motor" value="Motor">
+      <br>
+      <label>Overig: </label>
+      <input type="checkbox" checked="checked" name="vervoer" id="onbekend" value="Onbekend">
+      <br>
+      <label>Personenauto: </label>
+      <input type="checkbox" checked="checked" name="vervoer" id="personenauto" value="Personenauto">
+      <br>
+      <label>Snorfiets: </label>
+      <input type="checkbox" checked="checked" name="vervoer" id="snorfiets" value="Snorfiets">
+      <br>
+      <label>Trekker: </label>
+      <input type="checkbox" checked="checked" name="vervoer" id="trekker" value="Trekker">
+      <br>
+      <label>Trekker met oplegger: </label>
+      <input type="checkbox" checked="checked" name="vervoer" id="trekker-met-oplegger" value="Trekker met oplegger">
+      <br>
+      <label>Voetganger: </label>
+      <input type="checkbox" checked="checked" name="vervoer" id="voetganger" value="Voetganger">
 
-  var trafficLayer = new google.maps.TrafficLayer();
-  trafficLayer.setMap(map);
+    </div>
+    <div id="map"></div>
+    <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+
+    <script>
+$(document).ready(function(){
+
+    function generateWhere() {
+      var filter = [];
+      var stores = document.getElementsByName('vervoer');
+      for (var i = 0, store; store = stores[i]; i++) {
+        if (store.checked) {
+          var storeName = store.value.replace(/'/g, '\\\'');
+          filter.push("'" + storeName + "'");
+          }
+        }
+        var where = filter;
+        return where;
+    }
+
+
+
+  function initMap(){
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 13,
+      center: {lat: 51.91643, lng: 4.46749}
+    });
+
+    var trafficLayer = new google.maps.TrafficLayer();
+    trafficLayer.setMap(map);
+      // filters = ['\'Scootmobiel\'', '\'Bromfiets\''];
+    filters = generateWhere();
+    console.log(filters);
 
     var layer = new google.maps.FusionTablesLayer({
-    query: {
-      select: 'Jaar'
-      from: '1iY4H7gZoh8CUXrA5WVVQ4xIA-lmay0svaiYs7Ac',
-      where: 'GEMEENTE = \'Rotterdam\''
-    }
-  });
-  layer.setMap(map);
-}
+      query: {
+        select: 'Jaar',
+        from: '1iY4H7gZoh8CUXrA5WVVQ4xIA-lmay0svaiYs7Ac',
+        where: 'GEMEENTE = \'Rotterdam\' AND vervoerwijze IN (' + filters + ')' 
+      }
+    });
+    console.log('Filters: ' + filters)
+
+    console.log(JSON.stringify(layer, null, 4));
+    layer.setMap(map);
+
+  }
+
+  initMap();
+
+      $('input').bind('change', function(){
+            initMap();
+    });
+
+});
 
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=[APIKEYREMOVEBRACKETS]&callback=initMap&signed_in=true" async defer>
+
+<!-- Google example  -->
+
+
+<!-- End Google example -->
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCivw1_kmxgYtxExhuNBqmcEFYPB-uCtwM&callback=initMap&signed_in=true">
     </script>
   </body>
 </html>
