@@ -29,8 +29,9 @@ function initMap() {
 
     var layer = new google.maps.FusionTablesLayer({
     query: {
-      select: '',
+      select: 'Jaar'
       from: '1iY4H7gZoh8CUXrA5WVVQ4xIA-lmay0svaiYs7Ac',
+      where: 'GEMEENTE = \'Rotterdam\''
     }
   });
   layer.setMap(map);
